@@ -32,7 +32,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     try {
         const user = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!user) {
-            res.status(404).json({ error: 'User not found' });
+            throw 404;
             return;
         }
         res.status(200).json(user);
@@ -45,10 +45,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await Product.findByIdAndDelete(req.params.id);
-        if (!user) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
+        if (!user) throw 404
         res.status(204).send();
     } catch (error: any) {
         logger.error(`Failed to delete user: ${error.message}`);
