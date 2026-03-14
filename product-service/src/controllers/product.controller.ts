@@ -20,14 +20,11 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await Product.findById(req.params.id);
-        if (!user) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
+        if (!user) throw 404
         res.status(200).json(user);
     } catch (error: any) {
         logger.error(`Failed to get user: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        res.status(eh(error).statusCode).send(eh(error));
     }
 };
 
