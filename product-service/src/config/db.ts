@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const connectDatabase = () => {
-  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/mydatabase';
+  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/product-service';
 
   try {
      mongoose.connect(uri);
