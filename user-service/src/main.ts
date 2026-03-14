@@ -1,14 +1,20 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { RolesInterceptor } from './interceptors/roles.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  const PORT = configService.get<number>('PORT', 2025)
-  const listening = await app.listen(PORT);
-  if (listening) {
-    console.log(`Listening on port ${PORT}`);
-  }
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,            // remove unknown fields
+      forbidNonWhitelisted: true, // throw error if extra fields
+      transform: true,            // auto transform DTO types
+    }),
+  );
+  app.useGlobalInterceptors(new RolesInterceptor(app.get(Reflector)));
+  await app.listen(process.env.PORT ?? 3000);
+  const logger = new Logger('Bootstrap');
+  logger.log(`🚀 Server is running on: http://localhost:${process.env.PORT ?? 3000}`);
 }
 bootstrap();
