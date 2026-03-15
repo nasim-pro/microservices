@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const connectDatabase = () => {
-  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/product-service';
-
+  const uri = process.env.MONGODB_URI;
+  if (!uri) throw Error('MongoDB URI is undefined in product service')
   try {
      mongoose.connect(uri);
     console.log('MongoDB connected');
