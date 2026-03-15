@@ -29,4 +29,7 @@ export class UserService {
         const users = await this.userModel.find().select('name email').skip(skip).limit(limit);
         return { data: users, totalRecords: count }
     }
+
+
+    
 }
