@@ -5,13 +5,13 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class UserClient {
 
-    constructor(private httpService: HttpService) { }
+    constructor(private httpService: HttpService, ) { }
 
-    async getUser(userId: string) {
+    async getUser(userId: string, authHeader?: string) {
+        const config = authHeader ? { headers: { Authorization: authHeader } } : {};
         const response = await firstValueFrom(
-            this.httpService.get(`http://localhost:3001/users/${userId}`)
+            this.httpService.get(`http://localhost:2024/users/${userId}`, config)
         );
-
         return response.data;
     }
 }
