@@ -4,51 +4,50 @@ import { Request, Response } from 'express';
 import createLogger from '../utils/logger';
 import eh from '../utils/errorHandler';
 
-const logger = createLogger('UserController');
+const logger = createLogger('ProductController');
 
-export const createUser = async (req: Request, res: Response): Promise<void> => {
+export const createProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        throw new Error('This is custom error')
-        const user = new Product(req.body);
-        await user.save();
-        res.status(201).json(user);
+        const product = new Product(req.body);
+        await product.save();
+        res.status(201).json(product);
     } catch (error: any) {
         res.status(eh(error).statusCode).send(eh(error));
     }
 };
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export const getProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await Product.findById(req.params.id);
-        if (!user) throw 404
-        res.status(200).json(user);
+        const product = await Product.findById(req.params.id);
+        if (!product) throw 404
+        res.status(200).json(product);
     } catch (error: any) {
-        logger.error(`Failed to get user: ${error.message}`);
+        logger.error(`Failed to get product: ${error.message}`);
         res.status(eh(error).statusCode).send(eh(error));
     }
 };
 
-export const updateUser = async (req: Request, res: Response): Promise<void> => {
+export const updateProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!user) {
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!product) {
             throw 404;
             return;
         }
-        res.status(200).json(user);
+        res.status(200).json(product);
     } catch (error: any) {
-        logger.error(`Failed to update user: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Failed to update product: ${error.message}`);
+        res.status(eh(error).statusCode).send(eh(error));
     }
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await Product.findByIdAndDelete(req.params.id);
-        if (!user) throw 404
+        const product = await Product.findByIdAndDelete(req.params.id);
+        if (!product) throw 404
         res.status(204).send();
     } catch (error: any) {
-        logger.error(`Failed to delete user: ${error.message}`);
-        res.status(500).json({ error: error.message });
+        logger.error(`Failed to delete product: ${error.message}`);
+        res.status(eh(error).statusCode).send(eh(error));
     }
 };
