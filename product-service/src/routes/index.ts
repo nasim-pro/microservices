@@ -3,6 +3,6 @@ import  userRoutes  from './product.routes'
 import authenticate from '../middleware/auth';
 const mainRouter = Router();
 
-mainRouter.use('/product', authenticate, userRoutes);
+mainRouter.use('/products', authenticate, userRoutes);
 
 export default mainRouter;
