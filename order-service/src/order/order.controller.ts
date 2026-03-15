@@ -1,14 +1,20 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Headers } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './order.dto';
+import { ValidateToken } from '../validate/validate-token.decorator';
 
 @Controller('orders')
 export class OrderController {
-
     constructor(private orderService: OrderService) { }
-
     @Post()
-    create(@Body() dto: CreateOrderDto) {
-        return this.orderService.createOrder(dto);
+    @ValidateToken()
+    create(
+        @Body() dto: CreateOrderDto,
+        @Headers('authorization') authHeader: string,
+    ) {
+        return this.orderService.createOrder(dto, authHeader);
     }
+
+
+
 }
