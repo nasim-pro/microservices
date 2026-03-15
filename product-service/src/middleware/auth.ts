@@ -14,25 +14,17 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const secret = process.env.JWT_SECRET;
-
         if (!secret) throw new Error('Unable to read secret from env');
-
         const tokenHeader = req?.headers?.authorization;
-
         const token = tokenHeader?.split(' ')[1];
-
-        if (!token) return res.status(401).send({ message: 'Authentication is required', statusCode: 401 });
-
+        if (!token) return res.status(401).send({ error: 'Unauthorized', message: 'Invalid token',  statusCode: 401 });
         const user = jwt.verify(token, secret);
-
-        if (!user) return res.status(403).send({ message: 'Authentication failed', statusCode: 403 });
-
+        if (!user) return res.status(401).send({ error: 'Unauthorized', message: 'Invalid credential', statusCode: 401 });
         req.user = user;
-
         next();
 
     } catch (err: any) {
-        return res.status(403).send({ message: err.message, statusCode: 403 });
+        return res.status(401).send({ error: 'Unauthorized', message: err.message,  statusCode: 401 });
     }
 
 }
