@@ -6,9 +6,17 @@ import eh from '../utils/errorHandler';
 
 const logger = createLogger('ProductController');
 
+interface IProduct {
+    name: string;
+    price: number;
+    description: string;
+    category?: string;
+    stock?: number;
+}
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const product = new Product(req.body);
+        const { name, price, description, category, stock } = req.body as IProduct
+        const product = new Product({ name, price, description, category, stock });
         await product.save();
         res.status(201).json(product);
     } catch (error: any) {
@@ -51,3 +59,20 @@ export const deleteProduct = async (req: Request, res: Response): Promise<void> 
         res.status(eh(error).statusCode).send(eh(error));
     }
 };
+
+export const productList = async (req: Request, res: Response): Promise<void> => {
+    try {
+    const { page, pageSize } = req.query as any;
+    const skip: number = (page - 1) * pageSize;
+    const limit = pageSize;
+    const products = await Product
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .sort({ createdAt: -1 });
+        res.status(200).send(products);
+    } catch (err) {
+        res.status(eh(err).statusCode).send(eh(err));
+    }
+}
