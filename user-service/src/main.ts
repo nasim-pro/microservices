@@ -15,6 +15,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new RolesInterceptor(app.get(Reflector)));
   await app.listen(process.env.PORT ?? 3000);
   const logger = new Logger('Bootstrap');
-  logger.log(`🚀 Server is running on: http://localhost:${process.env.PORT ?? 3000}`);
+  logger.log(`user-service is running on: http://localhost:${process.env.PORT ?? 3000}`);
 }
 bootstrap();
