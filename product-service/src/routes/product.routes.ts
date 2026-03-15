@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { createUser, getUser, updateUser, deleteUser } from '../controllers/product.controller';
+import { createProduct, getProduct, updateProduct, deleteProduct, productList } from '../controllers/product.controller';
 
 const router = Router();
 
 // Define user routes
-router.post('/', createUser);
-router.get('/:id', getUser);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
+router.post('/', createProduct);
+router.get('/:id', getProduct);
+router.patch('/:id', updateProduct);
+router.delete('/:id', deleteProduct);
+router.get('/', productList)
 
 export default router;
