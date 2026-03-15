@@ -1,7 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidateTokenInterceptor } from './validate/validate-jwt-token';
+import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap() {
 
@@ -13,8 +14,11 @@ async function bootstrap() {
       transform: true,            // auto transform DTO types
     }),
   );
-  await app.startAllMicroservices();
+  app.useGlobalInterceptors(new ValidateTokenInterceptor())
   const port = process.env.PORT ? Number(process.env.PORT) : 2026;
   await app.listen(port);
+
+  const logger = new Logger('Bootstrap');
+  logger.log(`order-service is running on: http://localhost:${process.env.PORT ?? 3000}`);
 }
 bootstrap();
