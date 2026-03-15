@@ -1,33 +1,34 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { UserClient } from '../clients/user.client';
+import { ProductClient } from '../clients/product.client';
+import { CreateOrderDto } from './order.dto';
 
 @Injectable()
 export class OrderService {
 
     constructor(
-        @Inject('USER_SERVICE') private userClient: ClientProxy,
-        @Inject('PRODUCT_SERVICE') private productClient: ClientProxy,
+        private userClient: UserClient,
+        private productClient: ProductClient
     ) { }
 
-    async createOrder(data: any) {
+    async createOrder(dto: CreateOrderDto) {
 
-        const user = await firstValueFrom(
-            this.userClient.send('get_user', data.userId)
-        );
+        const user = await this.userClient.getUser(dto.userId);
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
 
-        const product = await firstValueFrom(
-            this.productClient.send('get_product', data.productId)
-        );
-
-        if (!user) throw new Error('User not found');
-        if (!product) throw new Error('Product not found');
+        const product = await this.productClient.getProduct(dto.productId);
+        if (!product) {
+            throw new BadRequestException('Product not found');
+        }
 
         const order = {
-            id: Date.now(),
-            userId: data.userId,
-            productId: data.productId,
-            quantity: data.quantity,
+            id: Date.now().toString(),
+            userId: dto.userId,
+            productId: dto.productId,
+            quantity: dto.quantity,
+            totalPrice: product.price * dto.quantity
         };
 
         return order;
