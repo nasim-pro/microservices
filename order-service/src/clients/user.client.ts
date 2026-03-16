@@ -10,7 +10,7 @@ export class UserClient {
     async getUser(userId: string, authHeader?: string) {
         const config = authHeader ? { headers: { Authorization: authHeader } } : {};
         const response = await firstValueFrom(
-            this.httpService.get(`http://localhost:2024/users/${userId}`, config)
+            this.httpService.get(`http://user-service:2024/users/${userId}`, config)
         );
         return response.data;
     }
