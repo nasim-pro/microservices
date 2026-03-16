@@ -11,7 +11,7 @@ export class ProductClient {
         try {
         const config = authHeader ? { headers: { Authorization: authHeader } } : {};
         const response = await firstValueFrom(
-            this.httpService.get(`http://localhost:2025/products/${productId}`, config)
+            this.httpService.get(`http://product-service:2025/products/${productId}`, config)
         );
         return response.data;
         } catch (err: any) {
@@ -23,7 +23,7 @@ export class ProductClient {
         try {
         const config = authHeader ? { headers: { Authorization: authHeader } } : {};
         const response = await firstValueFrom(
-            this.httpService.patch(`http://localhost:2025/products/${productId}`, updateDto, config)
+            this.httpService.patch(`http://product-service:2025/products/${productId}`, updateDto, config)
         );
         return response.data;
         } catch (err: any) {
